@@ -6,6 +6,19 @@ import (
 	"fmt"
 )
 
+/*
+	本示例代码的内容有：
+	1. package main
+	2. import：import也可以引用本地GOPATH目录src下的路径，如github.com/mengxiangjian13/stringutil。还可以引用一个github地址
+	3. const 见代码
+	4. var 见代码
+	5. type：type alias
+	6. if 语句：没有括号。可以初始变量。
+	7. for 循环三种情况。见代码
+	8. switch 语句符合条件的case自动break。
+	9. LABEL标签 goto continue break
+*/
+
 //const
 const (
 	a = 1
