@@ -17,6 +17,7 @@ func (h Hand) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	/*
+		// 最高层封装
 		resp := func(w http.ResponseWriter, r *http.Request) {
 			// 请求返回
 			fmt.Fprintf(w, "hello, %q", html.EscapeString(r.URL.Path))
@@ -26,6 +27,14 @@ func main() {
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	*/
 
+	/*
+		// 低一层封装
+		serverMux := http.NewServeMux()
+		serverMux.Handle("/", &Hand{})
+		log.Fatal(http.ListenAndServe(":8080", serverMux))
+	*/
+
+	// 在第一层封装
 	//以上就可以定义一个简单的httpServer了。如果想多自定义server，也是可以的。
 	s := &http.Server{
 		Addr:           ":8080",
@@ -35,4 +44,5 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	log.Fatal(s.ListenAndServe())
+
 }
