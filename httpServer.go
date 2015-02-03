@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -12,7 +13,18 @@ type Hand struct {
 }
 
 func (h Hand) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello, %q", html.EscapeString(r.URL.Path))
+	// 根据不同的请求地址不同的返回
+	if r.URL.String() == "/hello" {
+		// 输出
+		io.WriteString(w, "hello,world!")
+		return
+	} else if r.URL.String() == "/bye" {
+		io.WriteString(w, "bye,world!")
+		return
+	}
+
+	//另一种输出形式
+	fmt.Fprintf(w, "URL, %q", html.EscapeString(r.URL.Path))
 }
 
 func main() {
@@ -34,15 +46,14 @@ func main() {
 		log.Fatal(http.ListenAndServe(":8080", serverMux))
 	*/
 
-	// 在第一层封装
+	// 最底层封装
 	//以上就可以定义一个简单的httpServer了。如果想多自定义server，也是可以的。
 	s := &http.Server{
 		Addr:           ":8080",
-		Handler:        Hand{},
+		Handler:        &Hand{},
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 	log.Fatal(s.ListenAndServe())
-
 }
