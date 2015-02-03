@@ -6,7 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"time"
+	"os"
+	// "time"
 )
 
 type Hand struct {
@@ -39,21 +40,25 @@ func main() {
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	*/
 
-	/*
-		// 低一层封装
-		serverMux := http.NewServeMux()
-		serverMux.Handle("/", &Hand{})
-		log.Fatal(http.ListenAndServe(":8080", serverMux))
-	*/
-
-	// 最底层封装
-	//以上就可以定义一个简单的httpServer了。如果想多自定义server，也是可以的。
-	s := &http.Server{
-		Addr:           ":8080",
-		Handler:        &Hand{},
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
+	// 低一层封装
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
 	}
-	log.Fatal(s.ListenAndServe())
+	serverMux := http.NewServeMux()
+	serverMux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(wd)))) //fileServer返回一个handler，不用自己handle
+	log.Fatal(http.ListenAndServe(":8080", serverMux))
+
+	/*
+		// 最底层封装
+		//以上就可以定义一个简单的httpServer了。如果想多自定义server，也是可以的。
+		s := &http.Server{
+			Addr:           ":8080",
+			Handler:        &Hand{},
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+			MaxHeaderBytes: 1 << 20,
+		}
+		log.Fatal(s.ListenAndServe())
+	*/
 }
