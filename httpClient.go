@@ -10,9 +10,8 @@ package main
 */
 
 import (
-	"bytes"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http" // 网络库
 	"os"
 )
@@ -33,20 +32,11 @@ func main() {
 
 	defer resp.Body.Close() //调用http get者有责任close body
 
-	// 请求到数据并取出
-	result := bytes.NewBuffer(nil) // 建立一个缓冲，将请求返回写入
-	var buf [512]byte              // 读repsonse body到缓冲的中间介质（比特流），[]byte的slice
+	b, e := ioutil.ReadAll(resp.Body)
 
-	for {
-		n, err := resp.Body.Read(buf[0:])
-		result.Write(buf[0:n])
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			return
-		}
+	if e != nil {
+		fmt.Println("error:", err.Error())
 	}
 
-	fmt.Println(string(result.Bytes()))
+	fmt.Println(string(b))
 }
