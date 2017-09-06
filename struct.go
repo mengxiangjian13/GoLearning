@@ -36,12 +36,14 @@ func main() {
 	me := person{}
 	me.Name = "mengxiangjian"
 	me.Age = 26
+	me.gender = 1
 	fmt.Println(me)
 
 	// 可以在声明struct类型变量的时候直接设置字面量属性。
 	she := person{
-		Name: "guozhenyan",
-		Age:  26,
+		Name:   "guozhenyan",
+		Age:    26,
+		gender: 2,
 	}
 	fmt.Println(she)
 
@@ -54,6 +56,7 @@ func main() {
 	fmt.Println(bmw.Name)
 	changeCar(bmw)
 	fmt.Println(bmw.Name)
+	bmw.changeCarName("mini")
 
 	// 匿名struct
 	apple := &struct {
@@ -68,6 +71,10 @@ func main() {
 	}
 	santana.gender = 1 // santana.human.gender赋值也是对的。
 	fmt.Println(santana)
+}
+
+func (c *car) changeCarName(name string) {
+	c.Name = name
 }
 
 func changeCar(a *car) {
